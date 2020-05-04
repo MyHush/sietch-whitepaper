@@ -22,7 +22,7 @@
 \RequirePackage{nameref}
 
 \RequirePackage[style=alphabetic,maxbibnames=99,dateabbrev=false,urldate=iso8601,backref=true,backrefstyle=none,backend=biber]{biblatex}
-\addbibresource{hush.bib}
+\addbibresource{sietch.bib}
 
 % Fonts
 \RequirePackage{lmodern}
@@ -83,14 +83,14 @@
 \newlist{formulae}{itemize}{3}
 \setlist[formulae]{itemsep=0.2ex,topsep=0ex,leftmargin=1.5em,label=,after=\vspace{1.5ex}}
 
-\newcommand{\docversion}{Whitepaper Version 1.0}
+\newcommand{\docversion}{Whitepaper Version 0.1}
 \newcommand{\termbf}[1]{\textbf{#1}\xspace}
 \newcommand{\Hushlist}{\termbf{HushList}}
 \newcommand{\HushList}{\termbf{HushList}}
 \newcommand{\Hushlists}{\termbf{HushLists}}
 \newcommand{\HushLists}{\termbf{HushLists}}
 
-\newcommand{\doctitle}{New Attacks and Defenses for Zcash Protocol}
+\newcommand{\doctitle}{Attacking Zcash Protocol For Fun And Profit}
 \newcommand{\leadauthor}{Duke Leto}
 
 \newcommand{\keywords}{anonymity, freedom of speech, cryptographic protocols,\
@@ -101,7 +101,7 @@ zk-SNARKs }
   pdfborderstyle={/S/U/W 0.7},
   pdfinfo={
     Title={\doctitle, \docversion},
-    Author={\leadauthor},
+    Author={\leadauthor + The Hush Developers},
     Keywords={\keywords}
   }
 }
@@ -443,16 +443,32 @@ zk-SNARKs }
 \begin{abstract}
 \normalsize \noindent \textbf{Abstract.}
 
-This paper will outline, for the first time, exactly how the "ITM Metadata Attack"
+This paper will outline, for the first time, exactly how the "ITM Attack"
 works against Zcash Protocol and how Hush is the first cryptocoin with a defensive
 mitigation against it, called "Sietch". Sietch is already running live in production
 and undergoing it's first improvement from a round a feedback. This is not an academic
 paper about pipedreams, it will describe production code and networks.
 
+Beginning with a literature review of all known metadata attack methods that can be
+used against Zcash Protocol blockchains. This includes their estimated attack costs
+and threat model. This paper then describes the "ITM Attack" which is a specific instance
+of a new class of metadata attacks against blockchains which the author describes
+as "Metaverse Metadata" attacks.
+
+A few other new privacy issues and metadata attacks against Zcash Protocol coins
+will be enumerated for the first time publicly in this treatise.
+
+The paper then explains Sietch in detail, which was a response to these new attacks.
+We hope this knew knowledge and theory helps cryptocoins increase their defenses
+against very well-funded adversaries including nation states and chain analysis
+companies.
+
 \begin{quote}
+In privacy zdust we trust.
+
 If dust can attack us, dust can protect us.
 
-    -- Sietch Motto
+    -- Sietch Mottos
 \end{quote}
 
 \vspace{2.5ex}
@@ -471,19 +487,25 @@ If dust can attack us, dust can protect us.
 \newpage
 
 \nsection{Introduction}
-\nsection{Things Staying The Same}
 
-\begin{itemize}
-\item Hush v3.3.0 has Sietch V0
-\item Two fixed pools of zaddrs
-\item SDL uses two fixed pools of 5000 zaddrs
-\end{itemize}
+\nsection{Metadata Analysis of Zcash Protocol Blockchains: Basics}
 
-\begin{quote}
-A quote
-\end{quote}
+\nsection{Metadata Analysis of Zcash Protocol Blockchains: Advanced}
 
-\nsection{Stuff}
+\nsection{De-anonymization techniques literature review}
+
+\nsection{ITM Attack}
+
+...
+\nsection{Metaverse Metadata Attacks}
+
+TODO: Explain how they can be used on all blockchains with transaction graphs, including CryptoNote Protocol and MimbleWimble Protocol
+
+\nsection{Sietch: Theory}
+
+\nsection{Sietch: Code In Production}
+
+\nsection{Advice To Zcash Protocol Coins}
 
 \nsection{Special Thanks}
 

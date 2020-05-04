@@ -13,6 +13,8 @@ pdf:
 	$(LATEX) sietch.tex
 	$(LATEX) sietch.tex
 	$(LATEX) sietch.tex 
+	evince sietch.pdf
+
 .PHONY: clean
 clean:
 	rm -f sietch.dvi sietch.pdf sietch.bbl sietch.blg sietch.brf sietch.toc sietch.aux sietch.out sietch.log sietch.bcf sietch.run.xml sietch.ver
