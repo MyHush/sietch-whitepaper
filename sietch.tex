@@ -350,6 +350,7 @@ linkability, transaction graphs, shielded transactions, blockchain analysis }
 \newcommand{\taddr}{\textbf{\term{taddr}}}
 \newcommand{\taddrs}{\textbf{\term{taddrs}}}
 \newcommand{\zaddr}{\textbf{\term{zaddr}}}
+\newcommand{\zksnarks}{\textbf{\term{ZK-SNARKs}}}
 \newcommand{\zaddrs}{\textbf{\term{zaddrs}}}
 \newcommand{\memos}{\term{memo fields}}
 \newcommand{\Memos}{\titleterm{Memo Fields}}
@@ -509,6 +510,9 @@ in the traditional mathematical sense, of a set of nodes with a set
 of vertices connecting nodes. In cryptocoins these always happen
 to be directed graphs, since there are always funds which are unspent
 becoming spent, i.e. a direction associated with each transaction.
+This direction can be mathematically defined using the timestamp
+of the transaction. Inputs are unspent at the time of the transaction
+and outputs are spent at the time of the transaction.
 
 There is a great deal of mathematical history devoted to the study
 of \textbf{graph theory} that has not been applied to blockchain analysis,
@@ -577,6 +581,8 @@ An individual transaction $T$ is a sub-graph of the full transaction graph $T \s
 
 \nsubsection{Exchanges and Mining Pools}
 
+\nsubsection{What does the explorer not show?}
+
 \nsection{De-anonymization techniques literature review}
 
 \nsubsection{Applications to new Shielded-only Chains}
@@ -592,7 +598,7 @@ datums can be ascertained:
 \item  The value in the \zaddr sending funds.
 \item  The value any of the \zaddrs receiving funds.
 \item  The value of any ShieldedInputs spent in the transaction.
-\item  A range of possible values being sent to any \zaddr, such as $[0.42,1.7]$
+\item  A range of possible values being sent to any \zaddr, such as between 0.42 and 1.7 (with error estimate)
 \item  A range of possible values stored in the sending \zaddr.
 \end{itemize}
 
@@ -601,18 +607,124 @@ that this attack is completely passive in it's core, but can be greatly improved
 by adding active components "to taste". This is why metadata leakage attacks such
 as this can be thought of a method of analysis or an outright attack.
 
-The \textbf{ITM Attack} takes transaction id's and \zaddrs as input, or other OSINT which is readily available on Github, Twitter, Discord, Slack, public forms, mailing lists, IRC and many other locations. With these public resources, the \textbf{ITM Attack} can bridge the gap from theoretically interesting attack to actually de-anonymizing a \zaddr to it's corresponding social media accounts.
+The \textbf{ITM Attack} takes transaction id's and \zaddrs as input, or other OSINT which is readily available on Github, Twitter, Discord, Slack, public forms, mailing lists, IRC and many other locations. With these public resources, the \textbf{ITM Attack} can bridge the gap from theoretically interesting attack to actually de-anonymizing a \zaddr to it's corresponding social media accounts, email addresses, IP addresses, location data and more.
 
+This attack is not for weekend warriors or individuals with small budgets and is not
+cost-effective for attacking a single \zaddr. It's best suited for the largest
+players in The Great Game, i.e NSA, GCHQ and friends. It's highly likely they already
+utilize analysis and attacks described in this paper.
+
+Only the most well-funded private
+blockchain analysis companies will be able to afford the infrastructure for this
+attack, but once the data is "mined" it is a commodity that can be bought and sold
+to those with less resources.
+
+The ITM is an additional "layer" of analysis that can be overload on top of all other
+types of analysis, and in that way it has the potential to "finish" a lot of "partial
+de-anonymizations", i.e. places where blockchain analysis provides some data, but not
+enough to fully de-anon. When added to timing analysis, amount analysis and fee analysis,
+it can identify that certain \zaddrs being involved in many transactions and their
+approximate input and output values. This data is not available any other way and
+exact values are not very important.
+
+If a blockchain analyst can ascertain a transaction involves at least 1M USD in value
+versus a few pennies of value, that directly the course of analysis and investigation.
+Perfect de-anonymization is not needed and in practice does not matter. Software
+enabled with data from ITM analysis will be able to identify transaction outputs as having certain ranges of values and potentially their associated zaddrs from OSINT data.
+
+\nsubsection{ITM Attack: Assumptions}
+
+Fully working example code is left as an exercise to the interested blockchain analysis company. We shall describe the attack in enough detail for experts to verify our claims and for developers to implement attacks and or defenses, in the spirit of radical transparency.
+
+We assume an attacker has at least 100,000 USD in funds to dedicate to the operation of studying one particular Zcash blockchain. Most of this cost is in the purchase of a GPU/FPGA farm to crunch data. Blockchains with more history and larger shielded pools will be more costly to study.
+
+We note that this attack is not financially feasible as a one-off, it's a methodology
+to study an entire blockchain which can then be indexed and search for potentially valuabledata. Blockchain anlaysis companies and the IC are strategically positioned to use this
+information with the least cost, since they already have massive infrastructure to support this new dataset.
+
+\nsubsection{ITM Attack: Defeating \zksnarks}
+
+We can think of this attack as a "defeat" of zero-knowledge mathematics only in
+practice, not in theory. Many qualifications are needed. We in no way "broke"
+the mathematics of \zksnarks, we are taking advantage of how \zksnarks are being
+used in higher level protocols, i.e. the Zcash Transaction Format Protocol and
+it's associated consensus rules.
+
+So \zksnarks are sound and we have not actually leaked \textbf{knowledge} directly
+from a \textbf{zero-knowledge proof}, that is mathematically impossible. We
+have leaked knowledge from how these proofs are used in the larger system called
+Zcash Protocol, itself an extension of Bitcoin Protocol which notoriously leaks
+metadata.
+
+\nsubsection{ITM Attack: Infrastructure}
+
+This attack requires storing a lot of intermediate data in addition to the raw
+blockchain data and data storage costs are likely the number two expense after
+computing power. It is possible renting compute power can lower computing expenses
+but will not lower data storage costs. If one is analyzing a blockchain of $ B bytes $
+then a reasonable estimate is that $100*B bytes$ of intermediate storage will be needed
+to analyze the data and then a highly compressed version of the final useful data
+can likely be stored in $B/100 bytes$ or less. That is, the final datasize will be much
+smaller than the input data but our intermediate will likely be two orders of magnitude
+larger.
+
+Assume we have a simulated blockchain at block $N$, held in stasis and the analyst
+has their own mining hashrate to "push" the chain forward by it's own defined consensus
+rules. This can be accomplished by blocking all outside nodes and only connecting
+to the local hashrate.
+
+We also assume the analyst can easily "spin up" a blockchain at a certain block height
+and try a new change to extract new data. This is trivially possible with virtual
+machine images, docker containers and/or Git, and is left as an exercise to the
+motivated blockchain analyst.
+
+\nsubsection{ITM Attack: Consensual Oracles}
+
+We now analyze a specific $T: z \rightarrow z,z$ at a speficic block height $H$ which
+defines a specific \textbf{shielded pool} containing unspent shielded outputs and their
+associated metadata, such as \textbf{Merkle Tree} data.
+
+Very specifically, the simulation will use the \textbf{SaplingMerkleTree} internal Zcash Protocol datastructure defined in src/zcash/IncrementalMerkleTree.hpp . The ITM Attack focuses on this data structure but others can and should be explored as metadata oracles, such as the \textbf{SaplingWitness} data.
+
+At any given block height $H$ a shielded "note" or \textbf{zUTXO} is either spent or unspent. Just like transparent \textbf{UTXOs}, a \textbf{zUTXO} can be spent from the mempool, i.e. the output of a transaction in this block can be spent by another transaction.
+
+Different implementations of Zcash Protocol may react differently to spending zfunds from the mempool and so that is definitely a potential area of research.
+
+Known Sapling commitments/anchors are "swapped" into the SaplingMerkleTree one at a time,
+in an attempt to identify if they are being spent. If the new solution tree is invalid, then the data that was added caused it to become an invalid tree for a particular reason and
+that particular reason is conveniently given when consensus-level errors are emitted in Bitcoin and Zcash Protocols. These errors have their own error codes and provide a wealth of information leakage to the aspiring analyst. By trying various known bits of data and analyzing the exact consensus error codes emitted, information is leaked.
 
 \nsection{Metaverse Metadata Attacks}
 
-TODO: Explain how they can be used on all blockchains with transaction graphs, including CryptoNote Protocol and MimbleWimble Protocol
+The ITM Attack is a special case of what we name \textbf{Metaverse Metadata Attacks}, applied
+to Zcash Protocol shielded transaction graphs.
+
+The term \textbf{Metaverse} is appropriate because alternate possible blockchain histories can be simulated to see what consensus rules would have produced. By meticulously changing
+one piece of data at a time, the analyst can use the consensus rules at that moment in blockchain history as an \textbf{oracle}. In this sense, \textbf{Metaverse} attacks can be classified as \textbf{consensus oracle attacks}, similar to \textbf{compression oracle} attacks and \textbf{padding oracle} attacks such as BREACH and CRIME against TLS.
 
 \nsection{Sietch: Theory}
 
+The ITM Attack relies on the fact that the most common shielded transaction on most currently existing Zcash Protocol blockchains have only 2 outputs $T: z \rightarrow z,z$ and the basic fact that if some metadata can be leaked about one output, if it's spend or it's range of possible values, it provides a lot of metadata on the other output as well.
+
+If there were 3 outputs, then there would be uncertainty involved, instead of a more direct algebraic relation such as "if one output had amount=5 then the other output had an amount of $total - 5$". When 3 \zaddr outputs are involved, knowing the value of one \zaddr output does not provide as much information on the value of any other particular \zaddr.
+
+This principle obviously increases, as the number of outputs increases, the leakage of
+the amount of any one \zaddr input becomes exceedingly less valuable and expensive
+metadata to utilize.
+
 \nsection{Sietch: Code In Production}
 
+Sietch uses a default rule of a minimum of 7 \zaddr outputs in a transaction. Because
+the average shielded transaction does not spend the input values exactly and there is
+a change output, in practice the average Hush transaction has 8 \zaddr outputs.
+
+This is currently not a consensus rule and only enforced at RPC layer. There are
+currently various implementations of Sietch in our full node and lite wallets, which
+use raw transactions.
+
 \nsection{Advice To Zcash Protocol Coins}
+
+TLDR: You probably want Sietch or something like it.
 
 \nsection{Special Thanks}
 
