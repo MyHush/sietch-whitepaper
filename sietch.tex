@@ -725,10 +725,10 @@ metadata.
 This attack requires storing a lot of intermediate data in addition to the raw
 blockchain data and data storage costs are likely the number two expense after
 computing power. It is possible renting compute power can lower computing expenses
-but will not lower data storage costs. If one is analyzing a blockchain of $ B bytes $
-then a reasonable estimate is that $100*B bytes$ of intermediate storage will be needed
+but will not lower data storage costs. If one is analyzing a blockchain of $ B $ bytes
+then a reasonable estimate is that $100*B $ bytes of intermediate storage will be needed
 to analyze the data and then a highly compressed version of the final useful data
-can likely be stored in $B/100 bytes$ or less. That is, the final datasize will be much
+can likely be stored in $B\div100 $ bytes or less. That is, the final datasize will be much
 smaller than the input data but our intermediate will likely be two orders of magnitude
 larger.
 
@@ -766,6 +766,8 @@ to Zcash Protocol shielded transaction graphs.
 The term \textbf{Metaverse} is appropriate because alternate possible blockchain histories can be simulated to see what consensus rules would have produced. By meticulously changing
 one piece of data at a time, the analyst can use the consensus rules at that moment in blockchain history as an \textbf{oracle}. In this sense, \textbf{Metaverse} attacks can be classified as \textbf{consensus oracle attacks}, similar to \textbf{compression oracle} attacks and \textbf{padding oracle} attacks such as BREACH and CRIME against TLS.
 
+As far as the authors know this is a new technique that has not been publicly described. Blockchain consensus rules can be simulated in a vacuum and the scientific method of changing one variable at a time can be used to extract metadata from privacy coin public data.
+
 \nsection{Sietch: Theory}
 
 The ITM Attack relies on the fact that the most common shielded transaction on most currently existing Zcash Protocol blockchains have only 2 outputs $T: z \rightarrow z,z$ and the basic fact that if some metadata can be leaked about one output, if it's spend or it's range of possible values, it provides a lot of metadata on the other output as well.
@@ -783,16 +785,76 @@ the average shielded transaction does not spend the input values exactly and the
 a change output, in practice the average Hush transaction has 8 \zaddr outputs.
 
 This is currently not a consensus rule and only enforced at RPC layer. There are
-currently various implementations of Sietch in our full node and lite wallets, which
-use raw transactions.
+currently various implementations of Sietch in our full node and lite wallets.
+
+Whenever a transaction is made with less than 7 \zaddr outputs, the RPC layer
+automatically adds them, which means all software which uses the RPC layer
+is protected with absolutely no code changes. Software which uses raw
+transactions must take care of this themselves.
+
+This has the practical effect of hiding the number of recipients to the average
+transactions on the Hush network. When you see a $ z \rightarrow z,z,z $ transaction
+on ZEC mainnet, you can be almost sure it is one \zaddr sending to 2 other \zaddrs and
+a change output. It could also be sending to three outputs with no change, with drastically
+less probability. This type of transaction is "upgraded" to $ z \rightarrow z_7 $ at a minimum
+and so you don't know how many recipients are being sent to, except if it is a large number.
+In practice, this obscures most transactions on the network and it is mostly mining pool payouts
+which routinely use many \zaddr outputs or other automated software.
+
+Some transactions look like $ t \rightarrow t,t,z,t $ which is a transparent address sending to
+two other transparent addresses, one shielded address and a change output. When Sietch is enabled,
+this transaction is "upgraded" to $ t \rightarrow t,t,z,t,z_6$ to satisfy the minumum of 7 \zaddr
+output rule. Originally the exact amount of value being transferred to the \zaddr would be known,
+because all other values in the transaction are transparent and appear on the public blockchain.
+But in the "upgraded" transaction we can only ascertain that some amount $A$ was sent and sproud
+out across 7 outputs, some of which may be of zero value.
+
+In general, Sietch transactions make the job of de-anonymizing a chain much harder at the individual
+transaction level, which then builds up into a very strong and complex shielded transaction graph.
+The average ZEC mainnet shielded transaction has two outputs and so it's shielded transaction graph
+looks like a binary tree, while the Hush blockchain with Sietch looks like a tree that splits into
+8 parts at each node. Trying to follow the flow of funds becomes combinatorially impractical and
+expensive for even the largest players.
+
+\nsection{Thoughts On Device Seizure}
+
+TLDR: You should really care about this.
+
+For example, say Alice sent Bob and Charlie funds in a fully shielded transaction with shielded change: $ z \rightarrow z,z,z$
+
+Now let us say that Alice and Charlie have their devices seized, wallet.dat's "liberated" and uploaded
+into chain analysis software that understands Zcash Protocol and ITM-Style Attacks. Bob is now in a
+posistion where his \zaddr is known by the analyst/attacker, the exact amount sent to him in a certain
+txid and potentially other metadata in a memo field. All of this data is valuable input which makes
+the ITM attack better at it's job, and can often help "complete" partial de-anonymization which was
+unable to fully "resolve" the data.
+
+Even without any new attacks, device seizure and uploading wallet.dat contents into blockchain analysis
+software poses an enormous threat to privacy coins and so they should design systems that assume this will happen
+and to isolate and comparmentalize the damage possible.
 
 \nsection{Advice To Zcash Protocol Coins}
 
-TLDR: You probably want Sietch or something like it.
+Low numbers of \zaddr outputs are bad for privacy, especially 1 or 2. Enforcing at least 4 likely makes the ITM attack
+likely impractical. Hush chose 7 as a security buffer and because the slowdown associated with 7 outputs amounts
+to about 5 seconds on modern hardware, when spending a small number of inputs. This seemed like a reasonable amount
+of time for users to make a transaction, given that the original Sprout \zaddrs took over a minute to make the simplest
+of transactions.
+
+Shielded coinbase seems interesting but leaks a grave amount of metadata about the zaddress of the miner, which
+can feed into this analysis. We recommend Pirate, Arrow and other coins implementing enforced \zaddr usage
+avoid implementing the new ZIPXXX.
+
+Allowing users to spend huge numbers of inputs at once makes their transactions stand out. GUI wallets and education
+need to improve to reduce loss of privacy.
+
+Do not advocate that users post \zaddrs and the txid's and explorer links they are involved in! Educate them to
+keep this metadata to private messages, DMs and other non-public places. The fewer people that know your \zaddr,
+the better!
 
 \nsection{Special Thanks}
 
-Special thanks to jl777, ITM and denioD for their feedback. 
+Special thanks to jl777, ITM, denioD and Biz for their feedback.
 
 \nsection{References}
 
@@ -802,5 +864,12 @@ Special thanks to jl777, ITM and denioD for their feedback.
 \renewcommand{\emph}[1]{\textit{#1}}
 \printbibliography
 \endgroup
+
+\begin{center}
+\begin{quote}
+Speak And Transact Freely
+\end{quote}
+\end{center}
+
 
 \end{document}
