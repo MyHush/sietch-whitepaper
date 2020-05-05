@@ -770,7 +770,7 @@ As far as the authors know this is a new technique that has not been publicly de
 
 \nsection{Sietch: Theory}
 
-The ITM Attack relies on the fact that the most common shielded transaction on most currently existing Zcash Protocol blockchains have only 2 outputs $T: z \rightarrow z,z$ and the basic fact that if some metadata can be leaked about one output, if it's spend or it's range of possible values, it provides a lot of metadata on the other output as well.
+The ITM Attack relies on the fact that the most common shielded transaction on most currently existing Zcash Protocol blockchains have only 2 outputs $T: z \rightarrow z,z$ and the basic fact that if some metadata can be leaked about one output, if it's \textbf{spent} or \textbf{unspent} or it's range of possible values, it provides a lot of metadata on the other output as well.
 
 If there were 3 outputs, then there would be uncertainty involved, instead of a more direct algebraic relation such as "if one output had amount=5 then the other output had an amount of $total - 5$". When 3 \zaddr outputs are involved, knowing the value of one \zaddr output does not provide as much information on the value of any other particular \zaddr.
 
