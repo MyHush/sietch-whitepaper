@@ -569,19 +569,83 @@ An individual transaction $T$ is a sub-graph of the full transaction graph $T \s
 
 \nsubsection{Active vs Passive Attacks/Analysis}
 
+In addition to purely analyzing public information available to every full node, there is an \textbf{active mode}
+possible in any analysis. That is, to inject data (funds) and see how the blockchain reacts, to "follow the money"
+as it were. Some organizations must provide \zaddrs to their customers or know the \zaddrs of their customers,
+such as exchanges, mining pools and wallet providers. Also, many individuals choose to publicly post zaddrs and
+txid's which tie their social media and real life identities to unique blockchain identifiers. Many users
+accidentally paste this information, not realizing that Github issues and forum posts are mined for this OSINT data,
+but other defiantly choose to post it, such as zecpages.com . Our opinion is that they mean well, and are
+helping adoption in some way, but they are making the job of de-anonymization much too easy. Many of these users
+will post screenshots including their zaddr and transaction id or explorer link. This allows linking a zaddr to
+a ShieldedInput or ShieldedOutput, which should never normally be possible, and makes the job of the analyst that much easier.
+It allows software to potentially say "This twitter user owns this zaddr and sent funds in this txid which eventually ended up in a zaddr owned by another twitter user" and other
+similar inferences.
+
+As an example of active mode against an exchange that supports \zaddrs, the attacker can create an account and get a
+deposit \zaddr at the exchange. All forms of dust attacks are now available to the attacker.
+
+Similarly for mining pools which support paying out to \zaddr, an attacker can join the pool and mine enough to get a
+single payout. They will now know one of the zaddrs and the exact amount being paid out in that transaction. Mining
+pools are a wealth of information to de-anonymize \zaddrs and must be very careful to not leak useful metadata.
+
 \nsubsection{Timing Analysis}
+
+This analysis uses the heuristic that transactions that are close together are likely to be related, or
+transactions that form a similar temporal pattern are related. For instance, if you make a transaction
+at exactly the same time every day, or two transactions, spaced 1 hour apart once per week. In transparent
+blockchains, the value is always available and timing/value analysis is very powerful. In Zcash Protocol,
+we only have the timing, and only sometimes the value. Fully shielded $z \rightarrow z$ have no value info,
+while $ z \rightarrow t $ and $ t \rightarrow z $ have only partial value information.
 
 \nsubsection{Value Analysis}
 
+Value Analysis and Timing Analysis are essentially the same in Bitcoin Protocol but bifurcate into
+complimentary methods when we add \zaddrs to the analysis. In a $ t \rightarrow z $ transaction,
+we have "perfect metadata leakage" in the sense that we know the exact amount of funds going into that shielded output.
+These are somewhat rare but do happen, in the case of spending an output which exactly equals the amount being sent plus fee.
+There is also the case of $ t,t,...,t \rightarrow z $ transaction, which are created by z\_shieldcoinbase RPC. This
+turns transparent coinbase outputs to a single shielded output and leaks the total amount of value transferred to
+that single shielded output. The more common $ t \rightarrow z,z $ transaction introduces uncertainty.
+
+Now we consider the de-shielding $ z \rightarrow t $ which can also be considered to be "perfect metadata leakage"
+in the sense that we definitely know that an exact amount was in a \zaddr which owned that Shielded output and
+now is in a transparent address. The more common $ z \rightarrow t,z$ with a change address adds uncertainty and
+we do not know the exact amount going to the shielded change address.
+
 \nsubsection{Fee Analysis}
 
-\nsubsection{Input/Output Arity Analysis}
+This analysis is not very clever nor effective but it's simple to analyze the fee of every transaction, no
+matter whether it is shielded or not, and look for patterns such as non-standard fee use, using lower fees
+than normal for transaction size and those that pay large fees. Sometimes it is automated software which
+creates this fee metadata, by standing out from the crowd of most implementations. Other times it it individual
+users choosing a custom fee in their wallet, trying to save money. This analysis is essentially free and does not involve \zaddrs at all.
 
 \nsubsection{Dust Attacks}
 
+Dust is a term used colloquially and also a very specific term that comes from Bitcoin source code internals.
+We do not need a strict definition and we use it to mean any very small (potentially zero) amount that does
+not meaningfully cost much to the attacker.
+
+\nsubsection{Input/Output Arity Analysis}
+
+For better or worse, Sapling \zaddr transactions have a publicly visible number of inputs and outputs. This is perhaps the only
+feature loss from the previous Sprout \zaddr implementation, which used JoinSplits that obscured the exact number of inputs
+and outputs. The number of inputs you use in your shielded transaction and the number of shielded outputs tells a story.
+
+One simplified example of an "Input Arity Attack", which is active, is as follows: The attacker Alice discovers or finds out the zaddr of Bob and knows it currently has no funds. A brand new created address. She now sends 69 (or some other very unique number) dust outputs in a single transaction, paying the transaction fee. If an when Bob spends those funds, Alice can look for a transaction containing 69 inputs and then identify that txid contains the \zaddr she sent to and link together her original inputs to the outputs of that transaction.
+
+As for output arity analysis, if you have a very unique number of outputs in your transaction on the network, that is bad for your own privacy. If nobody on the network
+makes transactions with 42 shielded outputs every Tuesday at 1pm, except you, all your transactions can be analyzed as from a single owner, instead of potentially different owners.
+
 \nsubsection{Exchanges and Mining Pools}
 
+These entities leak massive amounts of metadata in their normal operations and must expend large amounts of effort
+to reduce the leakage for their own benefit as well as the blockchains they rely on.
+
 \nsubsection{What does the explorer not show?}
+
+A surprisingly large amount!
 
 \nsection{De-anonymization techniques literature review}
 
@@ -619,7 +683,7 @@ blockchain analysis companies will be able to afford the infrastructure for this
 attack, but once the data is "mined" it is a commodity that can be bought and sold
 to those with less resources.
 
-The ITM is an additional "layer" of analysis that can be overload on top of all other
+The ITM Attack is an additional "layer" of analysis that can be overlaid on top of all other
 types of analysis, and in that way it has the potential to "finish" a lot of "partial
 de-anonymizations", i.e. places where blockchain analysis provides some data, but not
 enough to fully de-anon. When added to timing analysis, amount analysis and fee analysis,
