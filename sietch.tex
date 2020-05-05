@@ -93,9 +93,9 @@
 \newcommand{\doctitle}{Attacking Zcash Protocol For Fun And Profit}
 \newcommand{\leadauthor}{Duke Leto + The Hush Developers}
 
-\newcommand{\keywords}{anonymity, freedom of speech, cryptographic protocols,\
-electronic commerce and payment, financial privacy, proof of work, zero knowledge\
-zk-SNARKs }
+\newcommand{\keywords}{anonymity, zcash protocol, cryptographic protocols, zk-SNARKs, metadata leakage, de-anonymization,\
+electronic commerce and payment, financial privacy, zero knowledge mathematics,\
+linkability, transaction graphs, shielded transactions, blockchain analysis }
 
 \hypersetup{
   pdfborderstyle={/S/U/W 0.7},
@@ -443,11 +443,12 @@ zk-SNARKs }
 \begin{abstract}
 \normalsize \noindent \textbf{Abstract.}
 
-This paper will outline, for the first time, exactly how the "ITM Attack"
+This paper will outline, for the first time, exactly how the "ITM Attack" (a linkability
+attack against shielded transactions)
 works against Zcash Protocol and how Hush is the first cryptocoin with a defensive
 mitigation against it, called "Sietch". Sietch is already running live in production
-and undergoing it's first improvement from a round a feedback. This is not an academic
-paper about pipedreams, it will describe production code and networks.
+and undergoing rounds of improvement from expert feedback. This is not an academic
+paper about pipedreams. It describes production code and networks.
 
 We begin with a literature review of all known metadata attack methods that can be
 used against Zcash Protocol blockchains. This includes their estimated attack costs
@@ -461,7 +462,13 @@ against very well-funded adversaries including nation states and chain analysis
 companies.
 
 A few other new privacy issues and metadata attacks against Zcash Protocol coins
-will also be enumerated for the first time publicly.
+will also be enumerated for the first time publicly. The ideas in this paper apply
+to all cryptocoins which utilize transaction graphs, which is to say just about all
+known coins. Specifically, the Metaverse Metadata class of attacks is applicable
+to all Bitcoin source code forks (including Dash, Verge, Zerocoin and their forks),
+CryptoNote Protocol coins (Monero and friends) and MimbleWimble Protocol (Grin, Beam, etc) coins
+but these will not be addressed here other than a high-level description of how to apply
+these methods to those chains.
 
 \begin{quote}
 In privacy zdust we trust.
