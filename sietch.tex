@@ -778,6 +778,19 @@ This principle obviously increases, as the number of outputs increases, the leak
 the amount of any one \zaddr input becomes exceedingly less valuable and expensive
 metadata to utilize.
 
+By design, Sietch is opt-out and by default all users use it without knowing it, which has worked well.
+Sietch makes every individual shielded transaction more complex which creates a harder-to-analyze
+transaction graph, helping even users which have custom software that does not use Sietch.
+
+The effect of almost all Hush users using Sietch all the time without knowing it, is a
+"herd immunity" against de-anonymization. The price is waiting a few extra seconds
+for each transaction and the Hush community feels it is quite well worth it.
+
+Even if some outputs of a transaction are completely de-anonymized, there are so many other
+outputs that exact values being transferred cannot be ascertained. This mimics the case
+where an infected person cannot easily infect another person with a virus because the people near them
+are already in recovery or immune.
+
 \nsection{Sietch: Code In Production}
 
 Sietch uses a default rule of a minimum of 7 \zaddr outputs in a transaction. Because
@@ -806,7 +819,7 @@ two other transparent addresses, one shielded address and a change output. When 
 this transaction is "upgraded" to $ t \rightarrow t,t,z,t,z_6$ to satisfy the minumum of 7 \zaddr
 output rule. Originally the exact amount of value being transferred to the \zaddr would be known,
 because all other values in the transaction are transparent and appear on the public blockchain.
-But in the "upgraded" transaction we can only ascertain that some amount $A$ was sent and sproud
+But in the "upgraded" transaction we can only ascertain that some amount $A$ was sent and spread
 out across 7 outputs, some of which may be of zero value.
 
 In general, Sietch transactions make the job of de-anonymizing a chain much harder at the individual
