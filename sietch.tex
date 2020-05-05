@@ -292,7 +292,8 @@ linkability, transaction graphs, shielded transactions, blockchain analysis }
 \newcommand{\transparentValuePool}{\term{transparent value pool}}
 \newcommand{\deshielding}{\term{deshielding}}
 \newcommand{\shielding}{\term{shielding}}
-\newcommand{\shielded}{\term{shielded}}
+\newcommand{\shielded}{\textbf{\term{shielded}}}
+\newcommand{\sheilded}{\textbf{\term{shielded}}}
 \newcommand{\shieldedXTN}{\term{shielded} $ t \rightarrow z $ transaction}
 \newcommand{\shieldedXTNs}{\term{shielded} $ t \rightarrow z $ transactions}
 \newcommand{\shieldedNote}{\term{shielded note}}
@@ -346,6 +347,10 @@ linkability, transaction graphs, shielded transactions, blockchain analysis }
 \newcommand{\zkSNARKs}{\term{zk-SNARKs}}
 \newcommand{\libsnark}{\term{libsnark}}
 \newcommand{\memo}{\term{memo field}}
+\newcommand{\taddr}{\textbf{\term{taddr}}}
+\newcommand{\taddrs}{\textbf{\term{taddrs}}}
+\newcommand{\zaddr}{\textbf{\term{zaddr}}}
+\newcommand{\zaddrs}{\textbf{\term{zaddrs}}}
 \newcommand{\memos}{\term{memo fields}}
 \newcommand{\Memos}{\titleterm{Memo Fields}}
 \newcommand{\keyAgreementScheme}{\term{key agreement scheme}}
@@ -497,13 +502,108 @@ If dust can attack us, dust can protect us.
 
 \nsection{Metadata Analysis of Zcash Protocol Blockchains: Basics}
 
+\nsubsection{Concepts and Definitions}
+
+This paper will be concerned with \textbf{transaction graphs}, which we define
+in the traditional mathematical sense, of a set of nodes with a set
+of vertices connecting nodes. In cryptocoins these always happen
+to be directed graphs, since there are always funds which are unspent
+becoming spent, i.e. a direction associated with each transaction.
+
+There is a great deal of mathematical history devoted to the study
+of \textbf{graph theory} that has not been applied to blockchain analysis,
+mostly because there was no blockchains to analyze just a few years
+ago and there was no financial profit in studying the data. That
+has obviously drastically changed.
+
+This paper will be primarily concered with \textbf{shielded transaction graphs}
+which are \textbf{directed acyclic graphs (DAGs)}. A \shielded transaction
+does not reveal the address of Alice, nor Bob, nor the amount transacted but it
+does leak a large amount of metadata at the protocol level, which is not rendered
+by block explorers nor well understood by the industry.
+
+A \sheilded transaction has at least one \shielded address, referred to as a \zaddr.
+
+We here concern ourselves only with \textbf{Zcash Protocol} which allows us to specify
+a coherent language and symbols to describe the new ITM \zaddr linkability attack and mitigations
+against it. All techniques here could technically also be used against transparent
+blockchains, but since they leak all the useful metadata already, it would serve
+no purpose. These new attacks can be thought of as "squeezing" new metadata leakage
+from zaddrs out of places that nobody thought to look.
+
+For those coins which only have a transaction graph at the network p2p level but
+not stored on their blockchain (such as MimbleWimble coins), it does raise the bar
+and attack cost. Since nation-states and are not cost-sensitive and obviously
+have a vested interest to de-anonymize all blockchains, MW coins are not immune
+to these new attacks being applied. A transaction graph still exists and so
+the core concepts here can be applied.
+
+\nsubsection{Types Of Shielded Transactions}
+
+There are many types of shielded transactions, mirroring the complexity of transparent transactions
+in Bitcoin Protocol. Here we introduce a convention for describing transactions.
+
+\begin{itemize}
+
+\item A fully shielded transaction $T$ with change $T:z \rightarrow (z,z)$
+\item A fully shielded transaction $T$ with no change $T:z \rightarrow z$
+\item A shielded transaction $T$ with transparent change $T:z \rightarrow (z,t)$
+\item A dehielding transaction $T$ with change $T:z \rightarrow (t,z)$
+\item A dehielding transaction $T$ with no change $T:z \rightarrow t$
+\item A shielding transaction $T$ with no change $T:t \rightarrow z$
+\item A shielding transaction $T$ with shielded change $T:t \rightarrow (z,z)$
+\item A shielding transaction $T$ with transparent change $T:t \rightarrow (z,t)$
+\end{itemize}
+
+The above summarizes the most common transactions. Now say we want to describe a transaction which sends to 5 \zaddrs and 3 transparent addresses with no change:
+$z \rightarrow z,z,z,z,z,t,t,t$ . To describe very large transactions subscripts can be used : $ z \rightarrow z_{52}, t_{39} $.
+
+An individual transaction $T$ is a sub-graph of the full transaction graph $T \subset \mathbb{T}$ with vertex count of one.
+
+
 \nsection{Metadata Analysis of Zcash Protocol Blockchains: Advanced}
+
+\nsubsection{Active vs Passive Attacks/Analysis}
+
+\nsubsection{Timing Analysis}
+
+\nsubsection{Value Analysis}
+
+\nsubsection{Fee Analysis}
+
+\nsubsection{Input/Output Arity Analysis}
+
+\nsubsection{Dust Attacks}
+
+\nsubsection{Exchanges and Mining Pools}
 
 \nsection{De-anonymization techniques literature review}
 
+\nsubsection{Applications to new Shielded-only Chains}
+
 \nsection{ITM Attack: z2z Transaction Linkability}
 
-...
+The \textbf{ITM Attack} specifically "attacks" a transaction $T:z\rightarrow z,z$, i.e.
+a fully-shielded Zcash Protocol transaction which has the highest level of privacy.
+First we describe the definition of the attack success, if any of the following
+datums can be ascertained:
+
+\begin{itemize}
+\item  The value in the \zaddr sending funds.
+\item  The value any of the \zaddrs receiving funds.
+\item  The value of any ShieldedInputs spent in the transaction.
+\item  A range of possible values being sent to any \zaddr, such as $[0.42,1.7]$
+\item  A range of possible values stored in the sending \zaddr.
+\end{itemize}
+
+If any of the above metadata can be "leaked", the attack is a success. We note
+that this attack is completely passive in it's core, but can be greatly improved
+by adding active components "to taste". This is why metadata leakage attacks such
+as this can be thought of a method of analysis or an outright attack.
+
+The \textbf{ITM Attack} takes transaction id's and \zaddrs as input, or other OSINT which is readily available on Github, Twitter, Discord, Slack, public forms, mailing lists, IRC and many other locations. With these public resources, the \textbf{ITM Attack} can bridge the gap from theoretically interesting attack to actually de-anonymizing a \zaddr to it's corresponding social media accounts.
+
+
 \nsection{Metaverse Metadata Attacks}
 
 TODO: Explain how they can be used on all blockchains with transaction graphs, including CryptoNote Protocol and MimbleWimble Protocol
