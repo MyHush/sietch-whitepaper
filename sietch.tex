@@ -549,21 +549,27 @@ in Bitcoin Protocol. Here we introduce a convention for describing transactions.
 
 \begin{itemize}
 
-\item A fully shielded transaction $T$ with change $T:z \rightarrow (z,z)$
-\item A fully shielded transaction $T$ with no change $T:z \rightarrow z$
-\item A shielded transaction $T$ with transparent change $T:z \rightarrow (z,t)$
-\item A dehielding transaction $T$ with change $T:z \rightarrow (t,z)$
-\item A dehielding transaction $T$ with no change $T:z \rightarrow t$
-\item A shielding transaction $T$ with no change $T:t \rightarrow z$
-\item A shielding transaction $T$ with shielded change $T:t \rightarrow (z,z)$
-\item A shielding transaction $T$ with transparent change $T:t \rightarrow (z,t)$
+\item A fully shielded transaction $T$ with change $z \rightarrow (z,z)$
+\item A fully shielded transaction $T$ with no change $z \rightarrow z$
+\item A shielded transaction $T$ with transparent change $z \rightarrow (z,t)$
+\item A deshielding transaction $T$ with change $z \rightarrow (t,z)$
+\item A deshielding transaction $T$ with no change $z \rightarrow t$
+\item A shielding transaction $T$ with no change $t \rightarrow z$
+\item A shielding transaction $T$ with transparent change $t \rightarrow (z,t)$
 \end{itemize}
 
 The above summarizes the most common transactions. Now say we want to describe a transaction which sends to 5 \zaddrs and 3 transparent addresses with no change:
 $z \rightarrow z,z,z,z,z,t,t,t$ . To describe very large transactions subscripts can be used : $ z \rightarrow z_{52}, t_{39} $.
 
-An individual transaction $T$ is a sub-graph of the full transaction graph $T \subset \mathbb{T}$ with vertex count of one.
+More complex transactions such as $ t,t,t \rightarrow z $ are possible, which is
+a shielding transaction most likely created by z\_shieldcoinbase. Raw transactions
+are free to be as complex as allowed and some may be classified as shielding and
+de-shielding at the same time, such as $ t,z \rightarrow t,z $ which is allowed
+by consensus rules but no RPC method currently creates such a transaction in any
+Zcash Protocol coin known to the authors. Even so, raw transactions could create
+them and if/when they show up they will stand out greatly as very unique transactions.
 
+An individual transaction $T$ is a sub-graph of the full transaction graph $T \subset \mathbb{T}$ with vertex count of one.
 
 \nsection{Metadata Analysis of Zcash Protocol Blockchains: Advanced}
 
