@@ -83,7 +83,7 @@
 \newlist{formulae}{itemize}{3}
 \setlist[formulae]{itemsep=0.2ex,topsep=0ex,leftmargin=1.5em,label=,after=\vspace{1.5ex}}
 
-\newcommand{\docversion}{Whitepaper Version 0.1}
+\newcommand{\docversion}{Whitepaper Version 0.2}
 \newcommand{\termbf}[1]{\textbf{#1}\xspace}
 \newcommand{\Hushlist}{\termbf{HushList}}
 \newcommand{\HushList}{\termbf{HushList}}
@@ -614,12 +614,16 @@ we have "perfect metadata leakage" in the sense that we know the exact amount of
 These are somewhat rare but do happen, in the case of spending an output which exactly equals the amount being sent plus fee.
 There is also the case of $ t,t,...,t \rightarrow z $ transaction, which are created by z\_shieldcoinbase RPC. This
 turns transparent coinbase outputs to a single shielded output and leaks the total amount of value transferred to
-that single shielded output. The more common $ t \rightarrow z,z $ transaction introduces uncertainty.
+that single shielded output. The more common $ t \rightarrow z,z $ transaction introduces uncertainty but it still provides
+useful metadata. If the transparent input was 10 HUSH than we know that the sum of values in all shielded outputs must be 10 HUSH
+and that any one individual output cannot be larger than 10 HUSH. This gives us a maximum value (upper bound) for the
+value in a shielded output and is very useful to blockchain analyst.
 
 Now we consider the de-shielding $ z \rightarrow t $ which can also be considered to be "perfect metadata leakage"
 in the sense that we definitely know that an exact amount was in a \zaddr which owned that Shielded output and
 now is in a transparent address. The more common $ z \rightarrow t,z$ with a change address adds uncertainty and
-we do not know the exact amount going to the shielded change address.
+we do not know the exact amount going to the shielded change address nor the total amount of value being spent
+by that \zaddr.
 
 \nsubsection{Fee Analysis}
 
@@ -628,12 +632,15 @@ matter whether it is shielded or not, and look for patterns such as non-standard
 than normal for transaction size and those that pay large fees. Sometimes it is automated software which
 creates this fee metadata, by standing out from the crowd of most implementations. Other times it it individual
 users choosing a custom fee in their wallet, trying to save money. This analysis is essentially free and does not involve \zaddrs at all.
+Fee analysis software from Bitcoin can be directly used on Zcash Protocol chains with little to no change.
 
 \nsubsection{Dust Attacks}
 
 Dust is a term used colloquially and also a very specific term that comes from Bitcoin source code internals.
 We do not need a strict definition and we use it to mean any very small (potentially zero) amount that does
-not meaningfully cost much to the attacker.
+not meaningfully cost much to the attacker. Dust attacks can be in the form of \textbf{Denial-of-Service}
+or \textbf{Metadata Leakage} and we focus on the latter. The "active mode" of the ITM attack is a form
+of Dust Attack, where we send funds to a known \zaddr to see what happens to them.
 
 \nsubsection{Input/Output Arity Analysis}
 
@@ -653,7 +660,8 @@ to reduce the leakage for their own benefit as well as the blockchains they rely
 
 \nsubsection{What does the explorer not show?}
 
-A surprisingly large amount!
+A surprisingly large amount! About a dozen or more unique id's can be discovered about every shielded transaction and all
+of these identifiers have the potential to leak small bits of metadata and be correlated to each other.
 
 \nsection{De-anonymization techniques literature review}
 
