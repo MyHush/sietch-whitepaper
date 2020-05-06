@@ -447,25 +447,14 @@ linkability, transaction graphs, shielded transactions, blockchain analysis }
 \renewcommand{\abstractname}{}
 \vspace{-8ex}
 \begin{abstract}
-\normalsize \noindent \textbf{Abstract.}
+\Large \noindent \textbf{Abstract}
 
-This paper will outline, for the first time, exactly how the "ITM Attack" (a linkability
-attack against shielded transactions)
-works against Zcash Protocol and how Hush is the first cryptocoin with a defensive
-mitigation against it, called "Sietch". Sietch is already running live in production
-and undergoing rounds of improvement from expert feedback. This is not an academic
-paper about pipedreams. It describes production code and networks.
+\normalsize
+For the first time, this paper will explain how the ”ITM Attack” (a linkability attack against shielded transactions) works against Zcash Protocol and how Hush is the first cryptocoin with a defensive mitigation against it, called ”Sietch”. Sietch has been running live in production and undergoing iterations of improvement from expert feedback. This is not an academic paper about pipedreams; it describes production code and networks.\\
 
-We begin with a literature review of all known metadata attack methods that can be
-used against Zcash Protocol blockchains. This includes their estimated attack costs
-and threat model. This paper then describes the "ITM Attack" which is a specific instance
-of a new class of metadata attacks against blockchains which the author describes
-as "Metaverse Metadata" attacks.
+We begin with a literature review of all known metadata attack methods that can be used against Zcash Protocol blockchains; this includes their estimated attack costs and threat model.
 
-The paper then explains Sietch in detail, which was a response to these new attacks.
-We hope this knew knowledge and theory helps cryptocoins increase their defenses
-against very well-funded adversaries including nation states and chain analysis
-companies.
+We then describe the ”ITM Attack” which is a specific instance of a new class of metadata attacks against blockchains that the author describes as ”Metaverse Metadata” attacks. Furthermore, we explain Sietch in detail, which was an response to these new attacks. We hope this new knowledge and theory helps cryptocoins increase their defenses against very well-funded adversaries including nation states and chain analysis companies.\\
 
 A few other new privacy issues and metadata attacks against Zcash Protocol coins
 will also be enumerated for the first time publicly. The ideas in this paper apply
@@ -474,19 +463,20 @@ known coins. Specifically, the Metaverse Metadata class of attacks is applicable
 to all Bitcoin source code forks (including Dash, Verge, Zerocoin and their forks),
 CryptoNote Protocol coins (Monero and friends) and MimbleWimble Protocol (Grin, Beam, etc) coins
 but these will not be addressed here other than a high-level description of how to apply
-these methods to those chains.
+these methods to those chains.\\
 
-\begin{quote}
-In privacy zdust we trust.
+\begin{quote} 
+"In privacy zdust we trust.
 
-If dust can attack us, dust can protect us.
+If dust can attack us, dust can protect us."
 
     -- Sietch Mottos
 \end{quote}
 
-\vspace{2.5ex}
+\vspace{25ex}
 \noindent \textbf{Keywords:}~ \StrSubstitute[0]{\keywords}{,}{, }.
 \end{abstract}
+\newpage
 
 \vspace{-10ex}
 \phantomsection
@@ -520,11 +510,7 @@ mostly because there was no blockchains to analyze just a few years
 ago and there was no financial profit in studying the data. That
 has obviously drastically changed.
 
-This paper will be primarily concered with \textbf{shielded transaction graphs}
-which are \textbf{directed acyclic graphs (DAGs)}. A \shielded transaction
-does not reveal the address of Alice, nor Bob, nor the amount transacted but it
-does leak a large amount of metadata at the protocol level, which is not rendered
-by block explorers nor well understood by the industry.
+This paper is primarily concerned with \textbf{shielded transaction graphs} which are \textbf{directed acyclic graphs (DAGs)} . A \shielded transaction does not reveal the address of Alice, nor Bob, nor the amount transacted but it does leak a large amount of metadata at the protocol level, which is not rendered by block explorers nor well understood by the industry.
 
 A \sheilded transaction has at least one \shielded address, referred to as a \zaddr.
 
