@@ -545,7 +545,7 @@ the core concepts here can be applied.
 \nsubsection{Types Of Shielded Transactions}
 
 There are many types of shielded transactions, mirroring the complexity of transparent transactions
-in Bitcoin Protocol. Here we introduce a convention for describing transactions.
+in Bitcoin Protocol. Here we introduce a convention for describing transactions and list commononly seen transactions:
 
 \begin{itemize}
 
@@ -555,7 +555,9 @@ in Bitcoin Protocol. Here we introduce a convention for describing transactions.
 \item A deshielding transaction $T$ with change $z \rightarrow (t,z)$
 \item A deshielding transaction $T$ with no change $z \rightarrow t$
 \item A shielding transaction $T$ with no change $t \rightarrow z$
-\item A shielding transaction $T$ with transparent change $t \rightarrow (z,t)$
+\item A shielding transaction $T$ with transparent receiver and no change $t \rightarrow (z,t)$
+\item A shielding transaction $T$ with transparent receiver and change $t \rightarrow (z,t,t)$
+\item A shielding transaction $T$ with shielded change (autoshield) $t \rightarrow (z,z)$
 \end{itemize}
 
 The above summarizes the most common transactions. Now say we want to describe a transaction which sends to 5 \zaddrs and 3 transparent addresses with no change:
