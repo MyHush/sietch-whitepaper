@@ -521,7 +521,9 @@ ago and there was no financial profit in studying the data. That
 has obviously drastically changed.
 
 This paper will be primarily concered with \textbf{shielded transaction graphs}
-which are \textbf{directed acyclic graphs (DAGs)}. A \shielded transaction
+which are \textbf{directed acyclic graphs (DAGs)} where a node represents a \textbf{transaction}
+with a unique id called \textbf{txid} and the incoming vertices are inputs being spent
+and the outgoing vertices are new outputs being created. A fully \shielded transaction
 does not reveal the address of Alice, nor Bob, nor the amount transacted but it
 does leak a large amount of metadata at the protocol level, which is not rendered
 by block explorers nor well understood by the industry.
@@ -786,6 +788,8 @@ As far as the authors know this is a new technique that has not been publicly de
 
 \nsection{Sietch: Theory}
 
+\nsubsection{Sietch: Basics}
+
 The ITM Attack relies on the fact that the most common shielded transaction on most currently existing Zcash Protocol blockchains have only 2 outputs $T: z \rightarrow z,z$ and the basic fact that if some metadata can be leaked about one output, if it's \textbf{spent} or \textbf{unspent} or it's range of possible values, it provides a lot of metadata on the other output as well.
 
 If there were 3 outputs, then there would be uncertainty involved, instead of a more direct algebraic relation such as "if one output had amount=5 then the other output had an amount of $total - 5$". When 3 \zaddr outputs are involved, knowing the value of one \zaddr output does not provide as much information on the value of any other particular \zaddr.
@@ -806,6 +810,26 @@ Even if some outputs of a transaction are completely de-anonymized, there are so
 outputs that exact values being transferred cannot be ascertained. This mimics the case
 where an infected person cannot easily infect another person with a virus because the people near them
 are already in recovery or immune.
+
+\nsubsection{Sietch: Non-Determinism}
+
+In addition to a minimum number of \zaddr outputs, Sietch introduces \textbf{non-determinism}
+into Zcash Protocol. Zcash inherited determinism from Bitcoin, where it is a good idea.
+In privacy coins, it turns out that determinism can reduce privacy in some situations and it
+is not actually a requirement for the cryptocoin to function.
+
+Sietch employs 3 kinds of non-determinism:
+
+\begin{itemize}
+\item 1 The order of automatically added \zaddr outputs is random
+\item 2 The exact number of automatically added outputs is random
+\item 3 The \zaddrs which are sent to are random
+\end{itemize}
+
+Hush developers feel that non-determinism is a powerful mitigation against \textbf{Metaverse Attacks}
+because when attempting to simulate the blockchain and look for oracles or leak useful bits of metadata,
+the outcome of a "test" is no longer deterministic and therefore some attacks will become impractical
+or impossible.
 
 \nsection{Sietch: Code In Production}
 
@@ -847,9 +871,7 @@ expensive for even the largest players.
 
 \nsection{Thoughts On Device Seizure}
 
-TLDR: You should really care about this.
-
-For example, say Alice sent Bob and Charlie funds in a fully shielded transaction with shielded change: $ z \rightarrow z,z,z$
+Say Alice sent Bob and Charlie funds in a fully shielded transaction with shielded change: $ z \rightarrow z,z,z$ .
 
 Now let us say that Alice and Charlie have their devices seized, wallet.dat's "liberated" and uploaded
 into chain analysis software that understands Zcash Protocol and ITM-Style Attacks. Bob is now in a
@@ -871,16 +893,36 @@ to about 5 seconds on modern hardware, when spending a small number of inputs. T
 of time for users to make a transaction, given that the original Sprout \zaddrs took over a minute to make the simplest
 of transactions.
 
-Shielded coinbase seems interesting but leaks a grave amount of metadata about the zaddress of the miner, which
-can feed into this analysis. We recommend Pirate, Arrow and other coins implementing enforced \zaddr usage
-avoid implementing the new ZIPXXX.
-
 Allowing users to spend huge numbers of inputs at once makes their transactions stand out. GUI wallets and education
 need to improve to reduce loss of privacy.
 
 Do not advocate that users post \zaddrs and the txid's and explorer links they are involved in! Educate them to
 keep this metadata to private messages, DMs and other non-public places. The fewer people that know your \zaddr,
 the better!
+
+\nsection{Future Considerations}
+
+This section considers various new technologies coming down the pipeline and how they interact with existing
+and new metadata analysis techniques.
+
+\nsubsection{Shielded Coinbase}
+
+Shielded coinbase seems interesting but leaks a grave amount of metadata about the zaddress of the miner, which
+can feed into this analysis. We recommend Pirate, Arrow and other coins implementing enforced \zaddr usage
+avoid implementing the new ZIPXXX.
+
+Shielded Coinbase will drastiscally reduce privacy of \zaddr miners, because they will re-use the same \zaddr
+for every block and it leaks the \zaddr being mined to. The "normal" behavior of mining to a taddr first then
+sending to a \zaddr isolates metadata leakage to the taddr. The \zaddr of a miner is never disclosed publicly.
+
+By using Timing and Value Analysis with Shielded Coinbase, an analyst can get a much better estimate on the minimum
+value a \zaddr likely has and how much funds pass thru it per time interval, as well as txid's to correlate to the
+\zaddr. These can all be used as inputs to the ITM Attack, as well.
+
+In summary, Shielded Coinbase was implemented by Electric Coin Company with no regard to increasing privacy on their
+blockchain. Since increased \zaddr usage does not translate into more profits, it does not seem likely that they
+will ever have meaningful privacy on Zcash mainnet. Only Zcash Protocol coin which enforce \zaddr usage have a
+chance at meaningful privacy.
 
 \nsection{Special Thanks}
 
