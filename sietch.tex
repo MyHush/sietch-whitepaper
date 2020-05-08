@@ -869,6 +869,32 @@ looks like a binary tree, while the Hush blockchain with Sietch looks like a tre
 8 parts at each node. Trying to follow the flow of funds becomes combinatorially impractical and
 expensive for even the largest players.
 
+\nsection{Implementation Details}
+
+We currently have four implementations of Sietch, two running in production, one which was deprecated
+and another still in testing. Initial feedback by privacy coin developers pointed out some issues
+in our initial implementations, bringing up threat models we did not initially think about.
+
+Originally all Sietch implementations had a fixed list of zaddrs embedded in source code, and these
+were randomly added as outputs to \zaddr transactions. This is not ideal, because if the private keys
+of those Sietch addresses are compromised, it would be possible to include that data into chain
+analysis software and potentially remove the privacy benefits of Sietch. We note that the worst case
+is to revert to pre-Sietch privacy.
+
+In repsonse to this, a Hush developer implemented randomized Sietch \zaddrs at run-time, which are
+never stored in source code, or on disk. A random seed phrase is generated and then a random \zaddr
+is generated from that seedphrase, and then the private key and seed phrase are immediately deleted
+from memory. Since every user now generates Sietch \zaddrs in-memory and they are thrown away, it
+is essentially impossible to de-anonymize people in bulk. It requires reading memory from individual
+nodes to recover those private keys or seedphrases. Currently SilentDragonLite uses this method,
+while the \textbf{hushd} full node still uses a fixed set of 200 randomly chosen \zaddrs \cite{SietchRPC}, \cite{SietchHeader}.
+
+We have an implementation that allows \textbf{hushd} to randomly generate Sietch addresses at
+run-time which is still in testing, as it makes low-level changes to how \zaddrs are stored in \textbf{wallet.dat} .
+
+We also note that all Sietch outputs are valid and spendable, they are not "fake" and they are not
+invalid outputs which are unspendable, because we belive those could be detected and leak metadata.
+
 \nsection{Thoughts On Device Seizure}
 
 Say Alice sent Bob and Charlie funds in a fully shielded transaction with shielded change: $ z \rightarrow z,z,z$ .
