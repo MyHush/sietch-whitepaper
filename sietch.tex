@@ -520,7 +520,8 @@ to be directed graphs, since there are always funds which are unspent
 becoming spent, i.e. a direction associated with each transaction.
 This direction can be mathematically defined using the timestamp
 of the transaction. Inputs are unspent at the time of the transaction
-and outputs are spent at the time of the transaction.
+and become spent after the transaction. Outputs do not exist before
+the transaction and are unspent after the transaction.
 
 There is a great deal of mathematical history devoted to the study
 of \textbf{graph theory} that has not been applied to blockchain analysis,
