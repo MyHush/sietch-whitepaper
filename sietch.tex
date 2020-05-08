@@ -472,7 +472,7 @@ will also be enumerated for the first time publicly. The ideas in this paper app
 to all cryptocoins which utilize transaction graphs, which is to say just about all
 known coins. Specifically, the Metaverse Metadata class of attacks is applicable
 to all Bitcoin source code forks (including Dash, Verge, Zerocoin and their forks),
-CryptoNote Protocol coins (Monero and friends) and MimbleWimble Protocol (Grin, Beam, etc) coins
+\CryptoNote Protocol coins (Monero and friends) and MimbleWimble Protocol (Grin, Beam, etc) coins
 but these will not be addressed here other than a high-level description of how to apply
 these methods to those chains.
 
@@ -500,6 +500,14 @@ If dust can attack us, dust can protect us.
 \newpage
 
 \nsection{Introduction}
+
+Sietch increases the privacy of \cite{Zcash} Protocol by making metadata-leakage
+much harder to perform and adding \textbf{non-determinsim}, i.e. \cite{Hush} does not act
+in the same way given the same inputs.
+
+Coupled with Hush transitioning to enforced privacy in late 2020, we believe this
+provides the highest level of privacy to users in the Zcash world and directly competes with
+the excellent privacy features of \cite{Monero} and other \cite{CryptoNote} Protocol coins.
 
 \nsection{Metadata Analysis of Zcash Protocol Blockchains: Basics}
 
@@ -530,7 +538,7 @@ by block explorers nor well understood by the industry.
 
 A \sheilded transaction has at least one \shielded address, referred to as a \zaddr.
 
-We here concern ourselves only with \textbf{Zcash Protocol} \cite{Zcash} which allows us to specify
+We here concern ourselves only with \textbf{Zcash Protocol} which allows us to specify
 a coherent language and symbols to describe the new ITM \zaddr linkability attack and mitigations
 against it. All techniques here could technically also be used against transparent
 blockchains, but since they leak all the useful metadata already, it would serve
@@ -810,7 +818,7 @@ By design, Sietch is opt-out and by default all users use it without knowing it,
 Sietch makes every individual shielded transaction more complex which creates a harder-to-analyze
 transaction graph, helping even users which have custom software that does not use Sietch.
 
-The effect of almost all Hush \cite{Hush} users using Sietch all the time without knowing it, is a
+The effect of almost all Hush users using Sietch all the time without knowing it, is a
 "herd immunity" against de-anonymization. The price is waiting a few extra seconds
 for each transaction and the Hush community feels it is quite well worth it.
 
