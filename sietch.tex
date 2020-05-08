@@ -547,7 +547,7 @@ the core concepts here can be applied.
 \nsubsection{Types Of Shielded Transactions}
 
 There are many types of shielded transactions, mirroring the complexity of transparent transactions
-in Bitcoin Protocol. Here we introduce a convention for describing transactions and list commononly seen transactions:
+in \cite{Bitcoin} Protocol. Here we introduce a convention for describing transactions and list commononly seen transactions:
 
 \begin{itemize}
 
@@ -781,10 +781,18 @@ that particular reason is conveniently given when consensus-level errors are emi
 The ITM Attack is a special case of what we name \textbf{Metaverse Metadata Attacks}, applied
 to Zcash Protocol shielded transaction graphs.
 
-The term \textbf{Metaverse} is appropriate because alternate possible blockchain histories can be simulated to see what consensus rules would have produced. By meticulously changing
-one piece of data at a time, the analyst can use the consensus rules at that moment in blockchain history as an \textbf{oracle}. In this sense, \textbf{Metaverse} attacks can be classified as \textbf{consensus oracle attacks}, similar to \textbf{compression oracle} attacks and \textbf{padding oracle} attacks such as BREACH and CRIME against TLS.
+The term \textbf{Metaverse} is appropriate because alternate possible blockchain histories can be simulated to see what consensus rules would have produced.
+By meticulously changing one piece of data at a time, the analyst can use the consensus rules at that moment in blockchain history as an \textbf{oracle}.
+In this sense, \textbf{Metaverse} attacks can be classified as \textbf{consensus oracle attacks}, similar to \textbf{compression oracle} attacks and \textbf{padding oracle}
+attacks such as \cite{BREACH}, \cite{CRIME} and \cite{HEIST} against SSL/TLS.
 
-As far as the authors know this is a new technique that has not been publicly described. Blockchain consensus rules can be simulated in a vacuum and the scientific method of changing one variable at a time can be used to extract metadata from privacy coin public data.
+While the above attacks are \textbf{side-channel attacks} using the timing response of requests,
+Metaverse Metadata Attacks are side-channels that study public chain data and consensus-level
+errors in simulations.
+
+As far as the authors know this is a new technique that has not been publicly described.
+Blockchain consensus rules can be simulated in a vacuum and the scientific method of changing one variable at a time can be used to extract metadata from privacy coin public data.
+There is untold amounts of metadata which can be "mined" from public blockchain data married to OSINT datasources.
 
 \nsection{Sietch: Theory}
 
