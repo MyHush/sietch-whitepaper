@@ -647,7 +647,7 @@ by that \zaddr.
 This analysis is not very clever nor effective but it's simple to analyze the fee of every transaction, no
 matter whether it is shielded or not, and look for patterns such as non-standard fee use, using lower fees
 than normal for transaction size and those that pay large fees. Sometimes it is automated software which
-creates this fee metadata, by standing out from the crowd of most implementations. Other times it it individual
+creates this fee metadata, by standing out from the crowd of most implementations. Other times it is individual
 users choosing a custom fee in their wallet, trying to save money. This analysis is essentially free and does not involve \zaddrs at all.
 Fee analysis software from Bitcoin can be directly used on Zcash Protocol chains with little to no change.
 
@@ -665,10 +665,10 @@ For better or worse, Sapling \zaddr transactions have a publicly visible number 
 feature loss from the previous Sprout \zaddr implementation, which used JoinSplits that obscured the exact number of inputs
 and outputs. The number of inputs you use in your shielded transaction and the number of shielded outputs tells a story.
 
-One simplified example of an "Input Arity Attack", which is active, is as follows: The attacker Alice discovers or finds out the zaddr of Bob and knows it currently has no funds. A brand new created address. She now sends 69 (or some other very unique number) dust outputs in a single transaction, paying the transaction fee. If an when Bob spends those funds, Alice can look for a transaction containing 69 inputs and then identify that txid contains the \zaddr she sent to and link together her original inputs to the outputs of that transaction.
+One simplified example of an active "Input Arity Attack" is as follows: The attacker Alice discovers or finds out the zaddr of Bob and knows it currently has no funds since it is a newly created address. She now sends 69 (or some other very unique number) dust outputs in a single transaction, paying the transaction fee. When Bob spends those funds, Alice can look for a transaction containing 69 inputs and then identify that txid contains the \zaddr she sent to and link together her original inputs to the outputs of that transaction.
 
 As for output arity analysis, if you have a very unique number of outputs in your transaction on the network, that is bad for your own privacy. If nobody on the network
-makes transactions with 42 shielded outputs every Tuesday at 1pm, except you, all your transactions can be analyzed as from a single owner, instead of potentially different owners.
+makes transactions with 42 shielded outputs every Tuesday at 1pm, except you, all your transactions can be analyzed from the perspective of being a single owner, instead of potentially different owners.
 
 \nsubsection{Exchanges and Mining Pools}
 
