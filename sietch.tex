@@ -350,7 +350,7 @@ linkability, transaction graphs, shielded transactions, blockchain analysis }
 \newcommand{\taddr}{\textbf{\term{taddr} }}
 \newcommand{\taddrs}{\textbf{\term{taddrs} }}
 \newcommand{\zaddr}{\textbf{\term{zaddr} }}
-\newcommand{\zksnarks}{\textbf{\term{ZK-SNARKs}}}
+\newcommand{\zksnarks}{\textbf{\term{zk-SNARKs}}}
 \newcommand{\zaddrs}{\textbf{\term{zaddrs} }}
 \newcommand{\memos}{\term{memo fields}}
 \newcommand{\Memos}{\titleterm{Memo Fields}}
@@ -434,6 +434,12 @@ linkability, transaction graphs, shielded transactions, blockchain analysis }
 \newcommand{\affiliation}{\hairspace$^\dagger$\;}
 \newcommand{\affiliationDuke}{\hairspace$^\ddagger$\;}
 
+\newcommand{\ITM}{\textbf{ITM Attack} }
+\newcommand{\Sietch}{\textbf{Sietch} }
+\newcommand{\Metaverse}{\textbf{Metaverse Metadata} }
+\newcommand{\Attacks}{\textbf{Attacks} }
+\newcommand{\MimbleWimble}{\textbf{MimbleWimble} }
+
 \begin{document}
 
 \title{\doctitle \\
@@ -449,10 +455,10 @@ linkability, transaction graphs, shielded transactions, blockchain analysis }
 \begin{abstract}
 \normalsize \noindent \textbf{Abstract.}
 
-This paper will outline, for the first time, exactly how the "ITM Attack" (a linkability
+This paper will outline, for the first time, exactly how the \ITM (a linkability
 attack against shielded transactions)
-works against Zcash Protocol and how Hush is the first cryptocoin with a defensive
-mitigation against it, called "Sietch". Sietch is already running live in production
+works against Zcash Protocol and how \Hush is the first cryptocoin with a defensive
+mitigation against it, called "\Sietch". Sietch is already running live in production
 and undergoing rounds of improvement from expert feedback. This is not an academic
 paper about pipedreams. It describes production code and networks.
 
@@ -460,7 +466,7 @@ We begin with a literature review of all known metadata attack methods that can 
 used against Zcash Protocol blockchains. This includes their estimated attack costs
 and threat model. This paper then describes the "ITM Attack" which is a specific instance
 of a new class of metadata attacks against blockchains which the author describes
-as "Metaverse Metadata" attacks.
+as \Metaverse \Attacks.
 
 The paper then explains Sietch in detail, which was a response to these new attacks.
 We hope this knew knowledge and theory helps cryptocoins increase their defenses
@@ -471,8 +477,8 @@ A few other new privacy issues and metadata attacks against Zcash Protocol coins
 will also be enumerated for the first time publicly. The ideas in this paper apply
 to all cryptocoins which utilize transaction graphs, which is to say just about all
 known coins. Specifically, the Metaverse Metadata class of attacks is applicable
-to all Bitcoin source code forks (including Dash, Verge, Zerocoin and their forks),
-\CryptoNote Protocol coins (Monero and friends) and MimbleWimble Protocol (Grin, Beam, etc) coins
+to all \Bitcoin source code forks (including Dash, Verge, Zerocoin and their forks),
+\CryptoNote Protocol coins (Monero and friends) and \MimbleWimble Protocol (Grin, Beam, etc) coins
 but these will not be addressed here other than a high-level description of how to apply
 these methods to those chains.
 
@@ -529,6 +535,11 @@ mostly because there was no blockchains to analyze just a few years
 ago and there was no financial profit in studying the data. That
 has obviously drastically changed.
 
+Recently we have seen improved blockchain analysis software that employs
+"semantically enriched" transaction graphs with search engines and advanced
+clustering algorithms to make user-friendly diagrams about complex money
+flows thrue many addresses \cite{OBitcoinWhereArtThou}.
+
 This paper will be primarily concered with \textbf{shielded transaction graphs}
 which are \textbf{directed acyclic graphs (DAGs)} where a node represents a \textbf{transaction}
 with a unique id called \textbf{txid} and the incoming vertices are inputs being spent
@@ -540,7 +551,7 @@ by block explorers nor well understood by the industry.
 A \sheilded transaction has at least one \shielded address, referred to as a \zaddr.
 
 We here concern ourselves only with \textbf{Zcash Protocol} which allows us to specify
-a coherent language and symbols to describe the new ITM \zaddr linkability attack and mitigations
+a coherent language and symbols to describe the new \ITM \zaddr linkability attack and mitigations
 against it. All techniques here could technically also be used against transparent
 blockchains, but since they leak all the useful metadata already, it would serve
 no purpose. These new attacks can be thought of as "squeezing" new metadata leakage
@@ -612,7 +623,7 @@ We would like to mention \cite{LuckPool} as an example of Best Practices by a mi
 they do not list any \zaddr publicly, do not allow searching by \zaddr and do not show which \zaddrs are being
 paid out. The Hush community also reached out to all Pirate mining pools long ago and they emoved public metadata
 about \zaddr miners when their were told the privacy implications. All mining pools which can pay out to \zaddrs
-should follow these guidelines. All public data about \zaddrs can be fed into ITM and Metaverse attacks.
+should follow these guidelines. All public data about \zaddrs can be fed into ITM and \Metaverse attacks.
 
 \nsubsection{Timing Analysis}
 
@@ -622,6 +633,9 @@ at exactly the same time every day, or two transactions, spaced 1 hour apart onc
 blockchains, the value is always available and timing/value analysis is very powerful. In Zcash Protocol,
 we only have the timing, and only sometimes the value. Fully shielded $z \rightarrow z$ have no value info,
 while $ z \rightarrow t $ and $ t \rightarrow z $ have only partial value information.
+
+There are also recent advanced timing analysis attacks such as \cite{PING-REJECT} which can using
+network-based timing analysis to link together a users IP address to their \zaddr.
 
 \nsubsection{Value Analysis}
 
@@ -642,6 +656,12 @@ now is in a transparent address. The more common $ z \rightarrow t,z$ with a cha
 we do not know the exact amount going to the shielded change address nor the total amount of value being spent
 by that \zaddr.
 
+There are advanced forms of Value Analysis such as \textbf{Danaan-Gift Attacks}, also known as malicious value fingerprinting \cite{BiryukovFeher}. The basic idea is you can send very specific amounts of funds to a \zaddr such as 
+0.72345618 and see if a $ z \rightarrow t $ transaction happens which has all or most of these particular values, perhaps modified by a default transaction fee. This attack does not have a high probabilty of working in any one circumstance, but it's like effective to "do on repeat", as nothing stops the attacker from trying again and again.
+
+\Hush will sidestep most value analysis by disabling transparent outputs
+in late November of 2020 and become a "privacy by default blockchain.
+
 \nsubsection{Fee Analysis}
 
 This analysis is not very clever nor effective but it's simple to analyze the fee of every transaction, no
@@ -659,6 +679,8 @@ not meaningfully cost much to the attacker. Dust attacks can be in the form of \
 or \textbf{Metadata Leakage} and we focus on the latter. The "active mode" of the ITM attack is a form
 of Dust Attack, where we send funds to a known \zaddr to see what happens to them.
 
+These attacks can be combined with \textbf{Danaan-Gift Attacks} as well \cite{BiryukovFeherVitto}.
+
 \nsubsection{Input/Output Arity Analysis}
 
 For better or worse, Sapling \zaddr transactions have a publicly visible number of inputs and outputs. This is perhaps the only
@@ -669,6 +691,11 @@ One simplified example of an active "Input Arity Attack" is as follows: The atta
 
 As for output arity analysis, if you have a very unique number of outputs in your transaction on the network, that is bad for your own privacy. If nobody on the network
 makes transactions with 42 shielded outputs every Tuesday at 1pm, except you, all your transactions can be analyzed from the perspective of being a single owner, instead of potentially different owners.
+
+\Sietch greatly hinders both input and output analysis because most transactions on the network will have 8 outputs, which means for all the transactions
+that send to between 1 and 7 receivers, all look the same. On Zcash mainnet, all of these are trivally able to be isolated and studied by their output
+arity. \Hush mixes together all of these very common output arity transactions into "one bucket". People sending to 9 or more \zaddr outputs are not
+protected by this and normal output arity histograms can be used to study transactions which have many outputs.
 
 \nsubsection{Exchanges and Mining Pools}
 
@@ -892,6 +919,35 @@ looks like a binary tree, while the Hush blockchain with Sietch looks like a tre
 8 parts at each node. Trying to follow the flow of funds becomes combinatorially impractical and
 expensive for even the largest players.
 
+Here we compare what a Zcash (ZEC) mainnet shielded transaction graph looks like, compared to
+the shielded transaction graph we would see with \Sietch on the HUSH mainnet. These two graphics
+show two \textbf{hops} where we define one hop as $ z \rightarrow z $ and two hops as
+$ z \rightarrow z \rightarrow z $ and so on. After a few hops, it's easy to see that the shielded
+transaction graph of a \Sietch-enabled blockchain explodes into a "star" of potential avenues for
+funds to flow in. A traditional Zcash Protocol chain is a binary tree and that means that if at
+any point you can take control of that \zaddr output, you know metadata about a large sub-graph
+of the transaction graph, such as seizing an unprotected wallet.dat file from a mobile phone,
+laptop or desktop computer. With \Sietch, if one of Alice's friends has their phone seized, there
+are still 7 of 8 places where funds could have gone, which may have been 1-7 actual outputs or
+some number of outputs automatically added by \Sietch. There is no way to know exactly \textbf{how many}
+people received funds except that at most 8 did and we do not know if all funds went to one \zaddr
+output and the rest were zero or some combination of funds in multiple \zaddrs .
+
+An attacker is forced to study a much more complex dataset with \Sietch and that is our goal. It
+makes each Hush transaction a little fortress in it's own right, and then when we connect many
+of these, the entire shielded transaction graph is very resistant to de-anonymization at any given
+place. On average, it is strong in every area of this large set of nodes and edges.
+
+After 10 hops Sietch will spread \zaddr funds into potentially $ 8^{10} = 1073741824 $ shielded outputs
+on average while the "plain" Zcash Protocol gives a transaction graph of size  $ 2^{10} =  1024  $ on
+average.
+
+\begin{center}
+\includegraphics[scale=0.420]{zec-graph.pdf}
+
+\includegraphics[scale=0.314]{sietch-graph.pdf}
+\end{center}
+
 \nsection{Implementation Details}
 
 We currently have four implementations of Sietch, two running in production, one which was deprecated
@@ -936,8 +992,8 @@ and privacy buffer against real-life scenarios.
 
 \nsection{Advice To Zcash Protocol Coins}
 
-Low numbers of \zaddr outputs are bad for privacy, especially 1 or 2. Enforcing at least 4 likely makes the ITM attack
-likely impractical. Hush chose 7 as a security buffer and because the slowdown associated with 7 outputs amounts
+Low numbers of \zaddr outputs are bad for privacy, especially 1 or 2. Enforcing at least \textbf{4} likely makes the ITM attack
+impractical since there are so many potential ways to swap in and out the remaining inputs. Hush chose \textbf{7} as a security buffer and because the slowdown associated with 7 outputs amounts
 to about 5 seconds on modern hardware, when spending a small number of inputs. This seemed like a reasonable amount
 of time for users to make a transaction, given that the original Sprout \zaddrs took over a minute to make the simplest
 of transactions.
@@ -949,6 +1005,21 @@ Do not advocate that users post \zaddrs and the txid's and explorer links they a
 keep this metadata to private messages, DMs and other non-public places. The fewer people that know your \zaddr,
 the better!
 
+\nsubsection{Sapling Consolidation}
+
+Sapling Consolidation is recommended and provides protection against metadata attacks
+as well as \textbf{Denial-of-Service} attacks in addition to it's primary function of reducing the size of
+wallet.dat files and hence making them much faster to use. \Hush has added \Sietch to our Sapling
+Consolidatoin implementation and also made it leak less metadata
+by reducing how many inputs it will ever spend at once, which is 8 to match the average number of outputs in \Sietch.
+This means that when this feature is turned on, and a node receives a dust attack of many small inputs, the node
+will magically clean up after the attack in the background with best practices for every transaction. These transactions
+are guaranteed to leave the size of our \textbf{anonymity set} the same or increase it by 1 (if there is no change output).
+The original implementation will spend up to 45 inputs at once and always sent to 1 output with fee=0, which trivially
+stands out on the network. On the \Hush network, these consolidation transaction look exactly like a very common
+$ z \rightarrow z $ with between 1 to 8 inputs and 7 or 8 outputs, blending into a large crowd of transactions which
+have the same properties.
+
 \nsection{Future Considerations}
 
 This section considers various new technologies coming down the pipeline and how they interact with existing
@@ -956,26 +1027,45 @@ and new metadata analysis techniques.
 
 \nsubsection{Shielded Coinbase}
 
-Shielded coinbase seems interesting but leaks a grave amount of metadata about the zaddress of the miner, which
+Shielded coinbase seems interesting but leaks a grave amount of metadata tied to the zaddress of the miner, which
 can feed into this analysis. We recommend Pirate, Arrow and other coins implementing enforced \zaddr usage
-avoid implementing the new ZIPXXX.
+avoid implementing the new \cite{ZIP-213} "Shielded Coinbase". The Hush community does not agree the the final conclusion
+of ZIP-213 that it is ok to make the miner \zaddr output public and that only users concerned with "post-quantum"
+privacy need to worry about metadata leakage. It gives no recourse to these users, and so in that sense Sietch
+can be seen an a valid defense against quantum computers. Further research is required to see what kind of
+speed up quantum computers can have on graph theory algorithms that make up the bulk of an \ITM.
 
 Shielded Coinbase will drastiscally reduce privacy of \zaddr miners, because they will re-use the same \zaddr
 for every block and it leaks the \zaddr being mined to. The "normal" behavior of mining to a taddr first then
 sending to a \zaddr isolates metadata leakage to the taddr. The \zaddr of a miner is never disclosed publicly.
+ZIP-213 says miners should make a new address for every block but that simply will not happen because it's optional
+and also makes wallet.dat files very large, slower, more annoying to backup, and various other reasons. All privacy
+coin research points to the fact that most users only do what is mandatory, they do not go out of there way to do
+extra work to get privacy.
 
 By using Timing and Value Analysis with Shielded Coinbase, an analyst can get a much better estimate on the minimum
 value a \zaddr likely has and how much funds pass thru it per time interval, as well as txid's to correlate to the
 \zaddr. These can all be used as inputs to the ITM Attack, as well.
 
-In summary, Shielded Coinbase was implemented by Electric Coin Company with no regard to increasing privacy on their
-blockchain. Since increased \zaddr usage does not translate into more profits, it does not seem likely that they
-will ever have meaningful privacy on Zcash mainnet. Only Zcash Protocol blockchains which enforce \zaddr usage have a
-chance at meaningful privacy.
+ZIP-213 is a fascinating academic exercise which could be implemented with better privacy properties but less auditability,
+i.e. knowing exactly how much new funds are being mined in each block. Taking into account the ITM Attack in particular
+and Metaverse Metadata attacks in general, ZIP-213 will not increase the privacy of a blockchain but potentially decrease
+it by infecting the shielded pool with too much metadata leakage.
+
+In summary, Shielded Coinbase was implemented by Electric Coin Company with little practical regard to increasing privacy on their
+blockchain, though it is an interesting technical peice of work. Since increased \zaddr usage does not translate into more profits,
+it does not seem likely that they will ever have meaningful privacy on Zcash mainnet.
+Only Zcash Protocol blockchains which enforce \zaddr usage have a chance at meaningful privacy.
 
 \nsection{Special Thanks}
 
-Special thanks to jl777, zawy, ITM, denioD and Biz for their feedback.
+Special thanks to jl777, zawy, ITM, denioD and Biz for their feedback and all the people in the Hush community
+involved in pushing the bleeding edge of privacy tech forward.
+
+\nsection{Acknowledgements}
+
+This is an independently funded work of research with no 3rd party
+funding sources. No funding from Electric Coin Company nor Zcash Foundation was received.
 
 \nsection{References}
 
@@ -987,10 +1077,7 @@ Special thanks to jl777, zawy, ITM, denioD and Biz for their feedback.
 \endgroup
 
 \begin{center}
-\begin{quote}
-Speak And Transact Freely
-\end{quote}
+\textbf{Speak And Transact Freely}
 \end{center}
-
 
 \end{document}
