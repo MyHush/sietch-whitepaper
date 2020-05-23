@@ -802,7 +802,7 @@ and try a new change to extract new data. This is trivially possible with virtua
 machine images, docker containers and/or Git, and is left as an exercise to the
 motivated blockchain analyst.
 
-\nsubsection{ITM Attack: Consensual Oracles}
+\nsubsection{ITM Attack: Consensus Oracle}
 
 We now analyze a specific $T: z \rightarrow z,z$ at a speficic block height $H$ which
 defines a specific \textbf{shielded pool} containing unspent shielded outputs and their
@@ -810,9 +810,9 @@ associated metadata, such as \textbf{Merkle Tree} data.
 
 Very specifically, the simulation will use the \textbf{SaplingMerkleTree} internal Zcash Protocol datastructure defined in src/zcash/IncrementalMerkleTree.hpp . The ITM Attack focuses on this data structure but others can and should be explored as metadata oracles, such as the \textbf{SaplingWitness} data.
 
-At any given block height $H$ a shielded "note" or \textbf{zUTXO} is either spent or unspent. Just like transparent \textbf{UTXOs}, a \textbf{zUTXO} can be spent from the mempool, i.e. the output of a transaction in this block can be spent by another transaction.
+At any given block height $H$ a shielded "note" or \textbf{zUTXO} is either spent or unspent.
 
-Different implementations of Zcash Protocol may react differently to spending zfunds from the mempool and so that is definitely a potential area of research.
+Just like transparent \textbf{UTXOs}, a \textbf{zUTXO} can be spent from the mempool, i.e. the output of a transaction in this block can be spent by another transaction. The ITM Attack does rely on the fact of a zutxo being spent from the mempool or not.
 
 Known Sapling commitments/anchors are "swapped" into the SaplingMerkleTree one at a time,
 in an attempt to identify if they are being spent. If the new solution tree is invalid, then the data that was added caused it to become an invalid tree for a particular reason and
