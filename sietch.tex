@@ -868,10 +868,15 @@ a structure where we can remove an "inner zutxo" that other things depend on.
 
 The \ITM marks $z3$ as invalid via HaveShieldedRequirements() or GetSaplingAnchorAt() returning false when actually the conditions
 are valid. When $z4$ transaction is attempted, it will fail since the zk-snark proof will reveal a depedency on $z2$. ITM calls this
-a "reverse proof". There is also the possibility of a "forward proof" when z12 allowed the x12 and y12 fails. In that instance, we can
+a "reverse proof". There is also the possibility of a "forward proof" when z4 allows the z2 to be spent but z3 fails. In that instance, we can
 say $ t12 \rightarrow x12 \rightarrow y12 \rightarrow z12 $ with high probability.
 
-These \textbf{zchains} are the main objects of attack and study in an \ITM, where it is an iterative process. To summarize, the \ITM requires
+These \textbf{zchains} are the main objects of attack and study in an \ITM, where it is an iterative process. Where chains of size $N$ are studied
+and sometimes a linkage can be determined, but often it cannot. When \ITM does find a valid reverse proof, it can attempt to extend it's knowledge
+by trying subchains, to get more metadata. It is a form of metadata mining. Each time a new block is mined, new funds can become spent and the 
+process can be repeated.
+
+To summarize, the \ITM requires
 a zutxo be spent to attempt to trace it's linkability to other previous ztuxos. An unspent zutxo cannot be analyzed. Additionally, $ t \rightarrow z $ and 
 $ z \rightarrow t $ do not currently seem vulnerable. Only $ z \rightarrow z $ transactions can be analyzed, and only the "inside" of the
 zchain can leak metadata, the very newest unspent zutxos do not give up metadata.
