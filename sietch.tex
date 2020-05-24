@@ -854,7 +854,7 @@ Very specifically, the simulation will use the \textbf{SaplingMerkleTree} intern
 
 At any given block height $H$ a shielded "note" or \textbf{zUTXO} is either spent or unspent.
 
-Just like transparent \textbf{UTXOs}, a \textbf{zUTXO} can be spent from the \mempool (set of unconfirmed transactions), i.e. the output of a transaction in this block can be spent by another transaction. The ITM Attack does rely on the fact of a zutxo being spent from the mempool or not.
+Just like transparent \textbf{UTXOs}, a \textbf{zUTXO} can be created from the \mempool (set of unconfirmed transactions), i.e. the output of a transaction in this block can be spent by another transaction, such as a $ t \rightarrow z $ spending a UTXO from the mempool and creating a zUTXO. The ITM Attack does rely on the fact of a zutxo being spent from the mempool or not.
 
 Known Sapling commitments/anchors are "swapped" into the SaplingMerkleTree one at a time,
 in an attempt to identify if they are being spent. If the new solution tree is invalid, then the data that was added caused it to become an invalid tree for a particular reason and
