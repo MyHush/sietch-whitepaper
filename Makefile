@@ -13,6 +13,7 @@ pdf:
 	$(LATEX) sietch.tex
 	$(LATEX) sietch.tex
 	$(LATEX) sietch.tex 
+	dot -Tpdf -o itm-zchain.pdf itm-zchain.gv # && evince itm-zchain.pdf
 	evince sietch.pdf
 
 .PHONY: clean

@@ -818,6 +818,24 @@ Known Sapling commitments/anchors are "swapped" into the SaplingMerkleTree one a
 in an attempt to identify if they are being spent. If the new solution tree is invalid, then the data that was added caused it to become an invalid tree for a particular reason and
 that particular reason is conveniently given when consensus-level errors are emitted in Bitcoin and Zcash Protocols. These errors have their own error codes and provide a wealth of information leakage to the aspiring analyst. By trying various known bits of data and analyzing the exact consensus error codes emitted, information is leaked.
 
+Here we depict the canononical situation which the \ITM works upon, what we call a "zchain":
+
+\includegraphics[scale=0.9]{itm-zchain.pdf}
+
+A simpler zchain of only $ t \rightarrow z $ or $ t \rightarrow z \rightarrow z $ does not have enough structure to leak metadata. We need
+a structure where we can remove an "inner zutxo" that other things depend on.
+
+The ITM Attack marks $z3$ as invalid via HaveShieldedRequirements() or GetSaplingAnchorAt() returning false when actually the conditions
+are valid. When $z4$ transaction is attempted, it will fail since the zk-snark proof will reveal a depedency on $z2$. ITM calls this
+a "reverse proof". There is also the possibility of a "forward proof" when z12 allowed the x12 and y12 fails. In that instance, we can
+say $ t12 \rightarrow x12 \rightarrow y12 \rightarrow z12 $ with high probability.
+
+These "zchains" are the main objects of attack and study in an \ITM, where it is an iterative process. To summarize, the \ITM requires
+a zutxo be spent to attempt to trace it's linkability to other previous ztuxos. An unspent zutxo cannot be analyzed. Additionally, $ t \rightarrow z $ and 
+$ z \rightarrow t $ do not currently seem vulnerable. Only $ z \rightarrow z $ transactions can be analyzed, and only the "inside" of the
+zchain can leak metadata, the very newest unspent zutxos do not give up metadata.
+
+
 \nsection{Metaverse Metadata Attacks}
 
 The ITM Attack is a special case of what we name \textbf{Metaverse Metadata Attacks}, applied
