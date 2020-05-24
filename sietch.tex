@@ -543,7 +543,7 @@ flows thrue many addresses \cite{OBitcoinWhereArtThou}.
 
 This paper will be primarily concered with \textbf{shielded transaction graphs}
 which are \textbf{directed acyclic graphs (DAGs)} where a node represents a \textbf{transaction}
-with a unique id called \textbf{txid} and the incoming vertices are inputs being spent
+with a unique id called \textbf{txid}. The incoming vertices are inputs being spent
 and the outgoing vertices are new outputs being created. A fully \shielded transaction
 does not reveal the address of Alice, nor Bob, nor the amount transacted but it
 does leak a large amount of metadata at the protocol level, which is not rendered
@@ -670,8 +670,8 @@ blockchains, the value is always available and timing/value analysis is very pow
 we only have the timing, and only sometimes the value. Fully shielded $z \rightarrow z$ have no value info,
 while $ z \rightarrow t $ and $ t \rightarrow z $ have only partial value information.
 
-There are also recent advanced timing analysis attacks such as \cite{PING-REJECT} which can using
-network-based timing analysis to link together a users IP address to their \zaddr.
+There are also recent advanced timing analysis attacks such as \cite{PING-REJECT} which can use
+network-based timing analysis to link together a user's IP address to their \zaddr.
 
 \nsubsection{Value Analysis}
 
