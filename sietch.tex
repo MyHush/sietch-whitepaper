@@ -303,6 +303,7 @@ linkability, transaction graphs, shielded transactions, blockchain analysis }
 \newcommand{\blockchain}{\term{block chain}}
 \newcommand{\blockchains}{\term{block chains}}
 \newcommand{\mempool}{\term{mempool}}
+\newcommand{\zchain}{\textbf{zchain}}
 \newcommand{\treestate}{\term{treestate}}
 \newcommand{\treestates}{\term{treestates}}
 \newcommand{\nullifier}{\term{nullifier}}
@@ -595,6 +596,41 @@ them and if/when they show up they will stand out greatly as very unique transac
 
 An individual transaction $T$ is a sub-graph of the full transaction graph $T \subset \mathbb{T}$ with vertex count of one.
 
+\nsubsection{Differences between KMD + HUSH + ZEC}
+
+We remind people that the Komodo project was the very first Zcash Protocol genesis block to be mined. The Komodo
+community took Zcash source code and mined their own genesis block first, on September 13th 2016 \cite{KMDGenesis}
+before the Zcash Genesis block on October 28th 2016 \cite{ZcashGenesis}. The first Hush mainnet was launched
+just after on November 17th 2016 \cite{HushGenesis} and was a source code fork of Zcash 1.0.8, not Komodo source code.
+
+There is something called the \textbf{Shielding Rule} in Zcash that ended up being one of the largest mistakes
+made by the project, which contributes to it's lack of privacy. Originally KMD and ZEC mainnet were very similar
+in that they both optionally allowed zaddrs. The main difference is that jl777 was already developing his own
+privacy additions on top of Zcash Protocol, and he rightly saw that forcing people to shield funds immediately
+will just cause them to do it poorly.
+
+On ZEC mainnet, newly mined coinbase funds must be send to a zaddr first, before they can be sent to a transparent
+address. This seems like a good idea at first, it "increases the anonymity set" by forcing everybody to go into
+the shielded pool. But all that glitters is not gold.
+
+The practical effect of the Zcash \textbf{Shielding Rule} is to infect the shielded pool with metadata leakage, specifically
+value and timing metadata, making it almost useless. On average, funds on ZEC mainnet only spend 1.4 hops in the shielded pool,
+which is to say, almost all funds only spend 1 hop, to satisfy the rule, and then immediately come out. Very often the exact
+same amount is going in and coming out in the next block or two, completely defeating the purpose of zaddrs.
+
+KMD does not have the \textbf{Shielding Rule}, nor does the current HUSH mainnet, which means newly mined coinbase can be sent to a taddr immediately,
+without forcing people to infect the shielded pool with metadata leakage by using it improperly. The original HUSH mainnet
+was based on ZEC source code and used their shielding rule, but when Hush launched it's second mainnet in April 2019,  it was
+based on KMD source code and hence removed the \textbf{Shielding Rule}.
+
+This means that the history of HUSH and ZEC look different from a blockchain analyst point of view. 
+On ZEC mainnet, all funds which are currently in a transparent address have passed through the shielded pool
+at least once, usually in a very metadata-leaky way.
+
+When Hush disables transparent outputs later this year, the only option will be for funds in transparent addresses to be
+sent to zaddrs and then never leave the shielded pool. Zcash continues to ignore zaddr adoption and will allow their users
+to have optional (i.e. very little) privacy into the indefinite future.
+
 \nsection{Metadata Analysis of Zcash Protocol Blockchains: Advanced}
 
 \nsubsection{Active vs Passive Attacks/Analysis}
@@ -707,9 +743,11 @@ to reduce the leakage for their own benefit as well as the blockchains they rely
 A surprisingly large amount! About a dozen or more unique id's can be discovered about every shielded transaction and all
 of these identifiers have the potential to leak small bits of metadata and be correlated to each other.
 
-\nsection{De-anonymization techniques literature review}
+The new RPC z\_viewtransaction can be used to see all the raw data which powers the zero knowledge proofs of zaddrs.
 
-\nsubsection{Applications to new Shielded-only Chains}
+%\nsection{De-anonymization techniques literature review}
+
+%\nsubsection{Applications to new Shielded-only Chains}
 
 \nsection{ITM Attack: z2z Transaction Linkability}
 
@@ -812,25 +850,28 @@ Very specifically, the simulation will use the \textbf{SaplingMerkleTree} intern
 
 At any given block height $H$ a shielded "note" or \textbf{zUTXO} is either spent or unspent.
 
-Just like transparent \textbf{UTXOs}, a \textbf{zUTXO} can be spent from the mempool, i.e. the output of a transaction in this block can be spent by another transaction. The ITM Attack does rely on the fact of a zutxo being spent from the mempool or not.
+Just like transparent \textbf{UTXOs}, a \textbf{zUTXO} can be spent from the \mempool (set of unconfirmed transactions), i.e. the output of a transaction in this block can be spent by another transaction. The ITM Attack does rely on the fact of a zutxo being spent from the mempool or not.
 
 Known Sapling commitments/anchors are "swapped" into the SaplingMerkleTree one at a time,
 in an attempt to identify if they are being spent. If the new solution tree is invalid, then the data that was added caused it to become an invalid tree for a particular reason and
 that particular reason is conveniently given when consensus-level errors are emitted in Bitcoin and Zcash Protocols. These errors have their own error codes and provide a wealth of information leakage to the aspiring analyst. By trying various known bits of data and analyzing the exact consensus error codes emitted, information is leaked.
 
-Here we depict the canononical situation which the \ITM works upon, what we call a "zchain":
+Here we depict the canononical situation which the \ITM works upon, what we call a \zchain :
 
 \includegraphics[scale=0.9]{itm-zchain.pdf}
 
-A simpler zchain of only $ t \rightarrow z $ or $ t \rightarrow z \rightarrow z $ does not have enough structure to leak metadata. We need
+First we note that removing zutxo/notes from the SaplingMerkleTree does not invalidate the transactions and 
+spending a transaction output depends on the zutxos being valid and present.
+
+A simpler \zchain of only $ t \rightarrow z $ or $ t \rightarrow z \rightarrow z $ does not have enough structure to leak metadata. We need
 a structure where we can remove an "inner zutxo" that other things depend on.
 
-The ITM Attack marks $z3$ as invalid via HaveShieldedRequirements() or GetSaplingAnchorAt() returning false when actually the conditions
+The \ITM marks $z3$ as invalid via HaveShieldedRequirements() or GetSaplingAnchorAt() returning false when actually the conditions
 are valid. When $z4$ transaction is attempted, it will fail since the zk-snark proof will reveal a depedency on $z2$. ITM calls this
 a "reverse proof". There is also the possibility of a "forward proof" when z12 allowed the x12 and y12 fails. In that instance, we can
 say $ t12 \rightarrow x12 \rightarrow y12 \rightarrow z12 $ with high probability.
 
-These "zchains" are the main objects of attack and study in an \ITM, where it is an iterative process. To summarize, the \ITM requires
+These \textbf{zchains} are the main objects of attack and study in an \ITM, where it is an iterative process. To summarize, the \ITM requires
 a zutxo be spent to attempt to trace it's linkability to other previous ztuxos. An unspent zutxo cannot be analyzed. Additionally, $ t \rightarrow z $ and 
 $ z \rightarrow t $ do not currently seem vulnerable. Only $ z \rightarrow z $ transactions can be analyzed, and only the "inside" of the
 zchain can leak metadata, the very newest unspent zutxos do not give up metadata.
@@ -961,9 +1002,9 @@ on average while the "plain" Zcash Protocol gives a transaction graph of size  $
 average.
 
 \begin{center}
-\includegraphics[scale=0.420]{zec-graph.pdf}
-
 \includegraphics[scale=0.314]{sietch-graph.pdf}
+
+\includegraphics[scale=0.420]{zec-graph.pdf}
 \end{center}
 
 \nsection{Implementation Details}
