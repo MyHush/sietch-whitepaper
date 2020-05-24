@@ -1074,7 +1074,7 @@ the better!
 Sapling Consolidation is recommended and provides protection against metadata attacks
 as well as \textbf{Denial-of-Service} attacks in addition to it's primary function of reducing the size of
 wallet.dat files and hence making them much faster to use. \Hush has added \Sietch to our Sapling
-Consolidatoin implementation and also made it leak less metadata
+Consolidation implementation and also made it leak less metadata
 by reducing how many inputs it will ever spend at once, which is 8 to match the average number of outputs in \Sietch.
 This means that when this feature is turned on, and a node receives a dust attack of many small inputs, the node
 will magically clean up after the attack in the background with best practices for every transaction. These transactions
